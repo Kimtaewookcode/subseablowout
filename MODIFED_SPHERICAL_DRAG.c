@@ -3,6 +3,7 @@ ANSYS Fluent UDF
 AUTHOR : KIMTAEWOOK
 LINKEDIN : www.linkedin.com/in/kimtw
 GITHUB : github.com/Kimtaewookcode
+Email : kimtaewook87@gmail.com
 */
 #include "udf.h"
 
