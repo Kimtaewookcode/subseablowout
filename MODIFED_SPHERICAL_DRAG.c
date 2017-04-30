@@ -1,4 +1,5 @@
 /* MODIFIED SPHERICAL DRAG (REF:Clift R., Grace J.R., Weber M.E. Bubbles, Drops, and Particl P112 )
+ANSYS Fluent UDF
 AUTHOR : KIMTAEWOOK
 LINKEDIN : www.linkedin.com/in/kimtw
 GITHUB : github.com/Kimtaewookcode
