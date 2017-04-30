@@ -1,0 +1,206 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1606+                                |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      particleProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+solution
+{
+    active          true;
+    coupled         true;
+    transient       yes;
+    cellValueSourceCorrection no;
+
+    maxCo           0.3;
+
+    interpolationSchemes
+    {
+        rho         cell;
+        U           cellPoint;
+        mu          cell;
+        gradAlpha   cellPoint;
+    }
+
+    averagingMethod dual;
+
+    integrationSchemes
+    {
+        U               Euler;
+    }
+
+    sourceTerms
+    {
+        schemes
+        {
+            U           semiImplicit 0.8;
+        }
+    }
+}
+
+constantProperties
+{
+    rho0            1.225;//changed
+    alphaMax        0.9;//needtobechanged
+}
+
+subModels
+{
+    particleForces
+    {
+        sphereDrag;
+        //WenYuDrag
+        //{
+        //    alphac      alphac;
+        //}
+        gravity;
+        interface
+        {
+            C            -10;
+            alphaName    alpha.water;
+        }
+    }
+
+    injectionModels
+    {
+        model1
+        {
+            type            patchInjection;
+            massTotal       0.416e1;
+            SOI             0;
+            parcelBasisType fixed;//mass;
+            nParticle       1;
+            patchName       inlet;
+            duration        20;
+            parcelsPerSecond 1e3;//1e5;
+            U0              (0 0 1.868);//changed
+            flowRateProfile constant 1;
+            sizeDistribution
+            {
+                type        RosinRammler;
+
+                RosinRammlerDistribution
+                {
+                    minValue        0.0018;
+                    maxValue        0.0847;
+                    d               0.0054;//droplet diameter that has the largest probability
+                    n               3.5;//from fluent
+                }
+            }
+    }
+    }
+    dispersionModel stochasticDispersionRAS;//none;addedlibrary and recompiled
+
+    patchInteractionModel localInteraction;
+
+    localInteractionCoeffs
+    {
+        patches
+        (
+            wall
+            {
+                type rebound;
+                e    0.95;
+                mu   0.09;
+            }
+            //base
+            //{
+            //    type rebound;
+            //    e    0.95;
+            //    mu   0.09;
+            //}
+            inlet
+            {
+                type escape;
+            }
+            outlet
+            {
+                type escape;
+            }
+        );
+    }
+
+    heatTransferModel none;
+
+    surfaceFilmModel none;
+
+    packingModel implicit;
+
+    explicitCoeffs
+    {
+        particleStressModel
+        {
+            type HarrisCrighton;
+            alphaPacked 0.6;
+            pSolid 10.0;
+            beta 2.0;
+            eps 1.0e-7;
+        }
+        correctionLimitingMethod
+        {
+            type absolute;
+            e 0.9;
+        }
+    }
+
+    implicitCoeffs
+    {
+        alphaMin 0.001;
+        rhoMin 1.0;
+        applyGravity false;
+        applyLimiting   false;
+        particleStressModel
+        {
+            type HarrisCrighton;
+            alphaPacked 0.9;
+            pSolid 5.0;
+            beta 2.0;
+            eps 1.0e-2;
+        }
+    }
+
+    dampingModel relaxation;
+
+    relaxationCoeffs
+    {
+        timeScaleModel
+        {
+            type nonEquilibrium;
+            alphaPacked 0.7;
+            e 0.8;
+        }
+    }
+
+    isotropyModel stochastic;
+
+    stochasticCoeffs
+    {
+        timeScaleModel
+        {
+            type isotropic;
+            alphaPacked 0.7;
+            e 0.8;
+        }
+    }
+
+    stochasticCollisionModel none;
+
+    radiation off;
+}
+
+
+cloudFunctions
+{}
+
+
+// ************************************************************************* //
