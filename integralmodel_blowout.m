@@ -10,19 +10,19 @@ close all
 clc
 g = 9.81;%gravity[m/s2]
 rho_w=998;%density of water[kg/s]
-m_release=0.208;%0.71milgram%0.208;%mass rate[kg/s]
+m_release=0.02695;%0.01838;%0.00625;%0.71milgram%0.208;%mass rate[kg/s]
 phi=3.14;%phi
 p0=101325;%atmopheric pressure[pa]
 rho_g0=1.225;%density of releasing gas[kg/m3]
 vs=0.35;%slip velocity[m/s]
-h=7;%height of the water surface
+h=10;%height of the water surface
 hp=10.33;
 x1 = 0;%centerline
 hoff=0;%h offset
 z0=1.75;%z value where you want to know about profile at
 %coefficients%
-alpha=0.1285;%0.13;%0.1285;entrainment coefficient
-gam=1.5;%1.5;
+alpha=0.12;%0.13;%0.1285;entrainment coefficient
+gam=1;%1.5;
 beta=0.39;%0.5;theoretical value%0.39;experimental value : for a loss-free rise;1for instantneous
 lambda=0.8;
 
@@ -98,12 +98,12 @@ v1_z=((25/12)^(1/3))*(z1.^(-1/3))*(1+11*z1/39+511/2*(z1/39).^2)-s1*7/22*(1+345/3
 v_z=v1_z*((g*m_release*(lambda^2+1))/((h+hp)*phi*gam*rho_g0*2*alpha^2))^(1/3);
 b1_z=3/5*z1*(1-z1/13-7*(z1/13)^2)+s1*3/110*((12/25)^(1/3))*(z1^(4/3))*(1-1046/49*z1/39-227726/833*(z1/39)^2)-(s1^2)*48/15121*((25/12)^(1/3))*(z1^(5/3))*(1-34663/9408*z1+225707803/240143904*z1^2);
 b_z=b1_z*(2*alpha*(h+hp));
-bz(i)=b_z;%designate br's 'i' th value
-veloarr_z(i)=v_z*exp(-(x1^2)/(b_z^2));%designate veloarr's 'i' th value
+bz(i,1)=b_z;%designate br's 'i' th value
+veloarr_z(i,1)=v_z*exp(-(x1^2)/(b_z^2));%designate veloarr's 'i' th value
 
 void1_z=1/(1-z1)/((b1_z.^2)*(v1_z+s1));
 void_z=void1_z*((((1+lambda^2)^2)*gam*(m_release/rho_g0)^2)/((phi^2)*(lambda^2)*(2^5)*(alpha^4)*((h+hp)^5)*g))^(1/3);
-voidz(i)=void_z*exp(-(x1^2)/((lambda^2)*(b_z^2)));%designate voidr's 'i' th value
+voidz(i,1)=void_z*exp(-(x1^2)/((lambda^2)*(b_z^2)));%designate voidr's 'i' th value
 
 
  i=i+1;
@@ -113,14 +113,14 @@ ylim([0 h])
 title('plume width');
 ylabel('z position[m]');
 xlabel('width[m]');
-figure;plot(veloarr_z,zarr, [1 1],'.-','.')
+figure;plot(veloarr_z,zarr,'.-')
 xlim([0 4])
 ylim([0 h])
 title('velocity at the centerline ');
 ylabel('z position[m]');
 xlabel('velocity[m/s]');
 figure;plot(voidz,zarr, '.-')
-xlim([0 0.5])
+xlim([0 0.06])
 ylim([0 h])
 title('voidfraction at the centerline');
 ylabel('z position[m]');
